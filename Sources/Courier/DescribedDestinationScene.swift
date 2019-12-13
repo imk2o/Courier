@@ -33,19 +33,21 @@ public protocol DescribedDestinationScene: DestinationScene {
 public typealias DescribedDestinationViewController = DescribedDestinationScene & UIViewController
 
 extension DescribedDestinationScene where Self: UIViewController {
-    public static func instantiate(with context: Context) -> Self! {
-        if let storyboardIdentifier = self.storyboardDescription.identifier {
-            let viewController = self.storyboardDescription.storyboard()
-                .instantiateViewController(withIdentifier: storyboardIdentifier) as! Self
-            viewController.context = context
-            
-            return viewController
-        } else {
-            let viewController = self.storyboardDescription.storyboard()
-                .instantiateInitialViewController() as! Self
-            viewController.context = context
-            
-            return viewController
+    public static func instantiate(with context: Context) -> UIViewController! {
+        let viewController: UIViewController? = {
+            if let storyboardIdentifier = self.storyboardDescription.identifier {
+                return self.storyboardDescription.storyboard()
+                    .instantiateViewController(withIdentifier: storyboardIdentifier)
+            } else {
+                return self.storyboardDescription.storyboard()
+                    .instantiateInitialViewController()
+            }
+        }()
+        
+        if let contentViewController = viewController?.contentViewController() as? Self {
+            contentViewController.context = context
         }
+
+        return viewController
     }
 }
