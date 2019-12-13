@@ -1,3 +1,3 @@
 # Courier
 
-A description of this package.
+A framework for transferring contexts between view controllers in Swift.
